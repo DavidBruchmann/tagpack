@@ -110,6 +110,10 @@
 		*/
 		function getSingleField_postProcess($table, $field, $row, &$out, $PA, $caller) {
 			 
+
+			$table = trim(stripslashes($table));
+
+
 			// we only want this to happen for our virtual field
 			if ($field == 'tx_tagpack_tags' && strpos($row['uid'], 'NEW') === false) {
 				 
@@ -117,15 +121,15 @@
 				$mmRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'uid_local',
 					'tx_tagpack_tags_relations_mm',
-					'tablenames=\''.$table.'\'
+					'tablenames=\''.mysql_real_escape_string($table).'\'
 					AND NOT deleted
 					AND NOT hidden
-					AND uid_foreign='.$row['uid'] );
+					AND uid_foreign='.intval($row['uid']) );
 				// if there are any records, create a list of their uids
 				if (count($mmRows)) {
 					foreach($mmRows as $mmVal) {
-						$uidList .= $uidList ? ','.$mmVal['uid_local'] :
-						$mmVal['uid_local'];
+						$uidList .= $uidList ? ','.intval($mmVal['uid_local']) :
+						intval($mmVal['uid_local']);
 					}
 				}
 				 
@@ -179,8 +183,6 @@
 			// Now we get the selected tags for the current record
 			$selectedUids = t3lib_div::trimexplode(',', $caller->datamap[$table][key($caller->datamap[$table])]['tx_tagpack_tags']);
 			
-			t3lib_div::debug($selectedUids);
-			
 			// if there are any we can create an array and hand it over to the function which is responsible for the DB actions
 			if (intval(trim($selectedUids[0]))) {
 				foreach($selectedUids as $selectedUid) {
@@ -215,6 +217,8 @@
 		*/
 		function processCmdmap_postProcess($command, $table, $id, $value, $caller) {
 		
+			$table = trim(stripslashes($table));
+
 			// First let's check which command was executed before
 			switch($command) {
 				 
@@ -242,7 +246,7 @@
 									'tx_tagpack_tags_relations_mm',
 									'tablenames=\''.$tablename.'\'
 									AND NOT hidden
-									AND uid_foreign='.$oldUid );
+									AND uid_foreign='.intval($oldUid) );
 								if (count($current_MM_Rows)) {
 									 
 									// now we can build the selectedTagUids array just as if somebody had selected the tags in a form
@@ -256,15 +260,15 @@
 									$newRecordData = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 									'*',
 										$tablename,
-										'uid='.$newUid );
+										'uid='.intval($newUid) );
 									$newPid = $newRecordData[0]['pid'];
 									 
 									// now we can execute the DB operations
 									$this->delete_update_insert_relations(
 									$selectedTagUids,
 										$tablename,
-										$newUid,
-										$newPid,
+										intval($newUid),
+										intval($newPid),
 										$command,
 										$caller );
 								};
@@ -282,9 +286,9 @@
 				$current_MM_Rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
 					'tx_tagpack_tags_relations_mm',
-					'tablenames=\''.$table.'\'
+					'tablenames=\''.mysql_real_escape_string($table).'\'
 					AND NOT hidden
-					AND uid_foreign='.$id );
+					AND uid_foreign='.intval($id) );
 				 
 				// fill the selectedTagUids Array
 				if (count($current_MM_Rows)) {
@@ -298,8 +302,8 @@
 				$this->delete_update_insert_relations(
 				$selectedTagUids,
 					$table,
-					$id,
-					$value,
+					intval($id),
+					intval($value),
 					$command,
 					$caller );
 				break;
@@ -308,7 +312,7 @@
 				 
 				// if a record has been deleted we can ignore the pid
 				// but we have to hand over an empty array for the selectedTagUids before we execute the DB operations
-				$this->delete_update_insert_relations(array(), $table, $id, '', $command, $caller);
+				$this->delete_update_insert_relations(array(), $table, intval($id), '', $command, $caller);
 				break;
 				 
 				case 'undelete':
@@ -318,9 +322,9 @@
 				$current_MM_Rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'uid_local,pid_foreign',
 					'tx_tagpack_tags_relations_mm',
-					'tablenames=\''.$table.'\'
+					'tablenames=\''.mysql_real_escape_string($table).'\'
 					AND NOT hidden
-					AND uid_foreign='.$id );
+					AND uid_foreign='.intval($id) );
 				 
 				// fill the selectedTagUid Array
 				if (count($current_MM_Rows)) {
@@ -334,8 +338,8 @@
 				$this->delete_update_insert_relations(
 				$selectedTagUids,
 					$table,
-					$id,
-					$valueArray['pid_foreign'],
+					intval($id),
+					intval($valueArray['pid_foreign']),
 					$command,
 					$caller );
 				break;
@@ -353,6 +357,9 @@
 		* @return [type]  Nothing, since it's only performing some DB operations
 		*/
 		function delete_update_insert_relations($selectedTagUids, $table, $id, $pid, $command = '', $caller='', $level = 0) {
+		
+			$table = trim(stripslashes($table));
+		
 			// level counter is used up to a maximum of 100 which should be the maximum number of recursive copies anyway
 			$level++;
 			if ($level > 100) {
@@ -364,9 +371,9 @@
 				$current_MM_Rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
 					'tx_tagpack_tags_relations_mm',
-					'tablenames=\''.$table.'\'
+					'tablenames=\''.mysql_real_escape_string($table).'\'
 					AND NOT hidden
-					AND uid_foreign='.$id.'
+					AND uid_foreign='.intval($id).'
 					AND 1=1' );
 			};
 			 
@@ -378,7 +385,7 @@
 			// or mark them as deleted, if the parent record itself has been deleted
 			if (count($current_MM_Rows)) {
 				foreach($current_MM_Rows as $key => $valueArray) {
-					$where = 'uid='.$valueArray['uid_local'];
+					$where = 'uid='.intval($valueArray['uid_local']);
 					 
 					// if there are no tags in the taglist anymore we have to make sure they are removed or marked deleted
 					if (!$selectedTagUids[$valueArray['uid_local']]) {
@@ -424,8 +431,8 @@
 										$this->delete_update_insert_relations(
 										array(),
 											$subValueArray['tablenames'],
-											$subValueArray['uid_foreign'],
-											$id,
+											intval($subValueArray['uid_foreign']),
+											intval($id),
 											'delete',
 											$caller,
 											$level );
@@ -440,8 +447,8 @@
 							// and remove the relation from the table
 							$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 							'tx_tagpack_tags_relations_mm',
-								'uid_local='.$valueArray['uid_local'].'
-								AND uid_foreign='.$valueArray['uid_foreign'].'
+								'uid_local='.intval($valueArray['uid_local']).'
+								AND uid_foreign='.intval($valueArray['uid_foreign']).'
 								AND tablenames=\''.$valueArray['tablenames'].'\'' );
 						}
 					} else {
@@ -460,7 +467,7 @@
 								'tx_tagpack_tags_relations_mm',
 								'NOT hidden
 								AND NOT deleted
-								AND uid_local='.$valueArray['uid_local'] );
+								AND uid_local='.intval($valueArray['uid_local']) );
 							$relations = $currentRelations[0];
 							 
 							// and write back the value to the relations field of the tag
@@ -502,7 +509,7 @@
 							'tx_tagpack_tags_relations_mm',
 							'NOT hidden
 							AND NOT deleted
-							AND uid_local='.$selectedUid );
+							AND uid_local='.intval($selectedUid) );
 						$currentRelations[0]['relations']++;
 						$relations = $currentRelations[0];
 						$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
@@ -513,15 +520,15 @@
 						// now we have to build the value array for the following insert action
 						$new_MM_Row = array (
 						'uid_local' => $selectedUid,
-							'uid_foreign' => $id,
-							'pid_foreign' => $pid,
-							'tstamp' => $timeNow,
-							'crdate' => $timeNow,
+							'uid_foreign' => intval($id),
+							'pid_foreign' => intval($pid),
+							'tstamp' => intval($timeNow),
+							'crdate' => intval($timeNow),
 							'cruser_id' => '0',
 							'sys_language_uid' => '0',
 							'deleted' => '0',
 							'hidden' => '0',
-							'tablenames' => $table,
+							'tablenames' => mysql_real_escape_string($table),
 							'sorting' => '1' );
 						// and insert the new record to the relation table
 						$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -537,10 +544,11 @@
 			if (count($selectedTagUids)) {
 				 
 				$TSconfig = t3lib_befunc::getPagesTSconfig($pid);
-				$getTagsFromPid = $TSconfig['tx_tagpack_tags.']['getTagsFromPid'] ? 'AND pid='.$TSconfig['tx_tagpack_tags.']['getTagsFromPid'] :
+				$getTagsFromPid = $TSconfig['tx_tagpack_tags.']['getTagsFromPid'] ? 'AND pid='.intval($TSconfig['tx_tagpack_tags.']['getTagsFromPid']) :
 				 '';
 				 
 				foreach($selectedTagUids as $tagName => $switch) {
+					$tagName = mysql_real_escape_string(trim(stripslashes($tagName)));
 					if ($switch == 'new') {
 						 
 						// first lets check if the name entered in the searchbox already exists
@@ -556,14 +564,14 @@
 						// on the dynamic list but simply hitting ENTER instead
 						if (count($existingTags)) {
 							 
-							$where = 'uid='.$existingTags[0]['uid'];
+							$where = 'uid='.intval($existingTags[0]['uid']);
 							// now we can count the number of records currently related to the tag
 							$currentRelations = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 							'count(*) AS relations',
 								'tx_tagpack_tags_relations_mm',
 								'NOT hidden
 								AND NOT deleted
-								AND uid_local='.$existingTags[0]['uid'] );
+								AND uid_local='.intval($existingTags[0]['uid']) );
 							$relations = $currentRelations[0];
 							$relations['relations']++;
 							 
@@ -575,15 +583,15 @@
 							 
 							$new_MM_Row = array (
 							'uid_local' => $existingTags[0]['uid'],
-								'uid_foreign' => $id,
-								'pid_foreign' => $pid,
-								'tstamp' => $timeNow,
-								'crdate' => $timeNow,
+								'uid_foreign' => intval($id),
+								'pid_foreign' => intval($pid),
+								'tstamp' => intval($timeNow),
+								'crdate' => intval($timeNow),
 								'cruser_id' => '0',
 								'sys_language_uid' => '0',
 								'deleted' => '0',
 								'hidden' => '0',
-								'tablenames' => $table,
+								'tablenames' => mysql_real_escape_string($table),
 								'sorting' => '1' );
 							// and insert the new record to the relation table
 							$GLOBALS['TYPO3_DB']->exec_INSERTquery(
@@ -598,8 +606,8 @@
 							// now we have to build the value array for the following insert action
 							$new_tag_Row = array (
 							'name' => $tagName,
-								'tstamp' => $timeNow,
-								'crdate' => $timeNow,
+								'tstamp' => intval($timeNow),
+								'crdate' => intval($timeNow),
 								'cruser_id' => '0',
 								'pid' => intval($TSconfig['tx_tagpack_tags.']['getTagsFromPid']),
 								'sys_language_uid' => '0',
@@ -614,15 +622,15 @@
 							 
 							$new_MM_Row = array (
 							'uid_local' => $GLOBALS['TYPO3_DB']->sql_insert_id(),
-								'uid_foreign' => $id,
-								'pid_foreign' => $pid,
-								'tstamp' => $timeNow,
-								'crdate' => $timeNow,
+								'uid_foreign' => intval($id),
+								'pid_foreign' => intval($pid),
+								'tstamp' => intval($timeNow),
+								'crdate' => intval($timeNow),
 								'cruser_id' => '0',
 								'sys_language_uid' => '0',
 								'deleted' => '0',
 								'hidden' => '0',
-								'tablenames' => $table,
+								'tablenames' => mysql_real_escape_string($table),
 								'sorting' => '1' );
 							// and insert the new record to the relation table
 							$GLOBALS['TYPO3_DB']->exec_INSERTquery(

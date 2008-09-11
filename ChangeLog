@@ -1,3 +1,8 @@
+0.3.1	08-09-12 JoH asenau  <info@cybercraft.de>
+	
+	* removed a debug output
+	* secured DB queries against possible attacks
+
 0.3.0	08-09-12 JoH asenau  <info@cybercraft.de>
 	
 	* fixed some bugs with empty datamap entries for the tag field

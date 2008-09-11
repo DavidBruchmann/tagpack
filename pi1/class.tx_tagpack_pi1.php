@@ -118,7 +118,7 @@
 					AND NOT tt.hidden',
 					'relations',
 					'relations DESC',
-					$conf['maxNumberOfSizes'] );
+					intval($conf['maxNumberOfSizes']) );
 				if (count($tagRelations)) {
 					foreach($tagRelations as $relations) {
 						$relationRange .= $relationRange ? ','.intval($relations['relations']) :
