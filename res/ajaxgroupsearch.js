@@ -103,18 +103,20 @@ function tx_tagpack_ajaxsearch_observer(el,creator,params) {
 				break;
 			
 			case 10: // prototype doesn't care for *ix*
-			case Event.KEY_RETURN:				
+			case Event.KEY_RETURN:
 				if (this.current) {
-					this.results.down('a').onclick();
+					this.current.down('a').onclick();
 					this.current = false;
 					this.el.value='';
 					this.el.blur();
 					this.el.focus();
+					this.lastVal = false;
 				} else {
 				    setFormValueFromBrowseWin(this.el.id.replace(/_ajaxsearch/g,''),'new_'+this.el.value,this.el.value,'');
 				    this.el.value='';
 				    this.el.blur();
 				    this.el.focus();
+				    this.lastVal = false;
 				}
 				Event.stop(e);
 				break;

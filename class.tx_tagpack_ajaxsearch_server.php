@@ -277,10 +277,10 @@
 						$value = $table.'_'.$row['uid'];
 					 
 					$icon = t3lib_iconWorks::getIconImage($table, $row, '', 'title="'.t3lib_BEfunc::getRecordIconAltText($row, $table).'"');
-					$onclick = 'setFormValueFromBrowseWin(\''.$fieldId.'\',\''.$value.'\',\''.$label.'\');';
+					$onclick = 'setFormValueFromBrowseWin(\''.$fieldId.'\',\''.$value.'\',\''.$label.'\');return true;';
 					$label = str_replace($searchWord,'<strong>'.$searchWord.'</strong>',$label);
 					$label = str_replace(strtolower($searchWord),'<strong>'.strtolower($searchWord).'</strong>',$label);
-					$content .= '<li><a title="'.$title.'" onclick="'.$onclick.'" >'.$icon.'<span>'.$label.'</span></a></li>';
+					$content .= '<li><a href="#" title="'.$title.'" onclick="'.$onclick.'" >'.$icon.'<span>'.$label.'</span></a></li>';
 				}
 			}
 			if (!$content)

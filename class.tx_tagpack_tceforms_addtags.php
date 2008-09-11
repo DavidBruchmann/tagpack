@@ -168,6 +168,8 @@
 		* @return [type]  Nothing since it's only performing some DB operations
 		*/
 		function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $caller) {
+			
+			
 
 			$id = (strpos($id, 'NEW') === false) ? $id : $caller->substNEWwithIDs[$id];
 			 
@@ -176,9 +178,11 @@
 			 
 			// Now we get the selected tags for the current record
 			$selectedUids = t3lib_div::trimexplode(',', $caller->datamap[$table][key($caller->datamap[$table])]['tx_tagpack_tags']);
-			 
+			
+			t3lib_div::debug($selectedUids);
+			
 			// if there are any we can create an array and hand it over to the function which is responsible for the DB actions
-			if (count($selectedUids)) {
+			if (intval(trim($selectedUids[0]))) {
 				foreach($selectedUids as $selectedUid) {
 					// if there are any prefixes, we must strip them first
 					$selectedUid = str_replace('tx_tagpack_tags_', '', $selectedUid);
@@ -210,7 +214,7 @@
 		* @return [type]  Nothing, since it's only performing some DB operations
 		*/
 		function processCmdmap_postProcess($command, $table, $id, $value, $caller) {
-			 
+		
 			// First let's check which command was executed before
 			switch($command) {
 				 
@@ -464,15 +468,16 @@
 							'tx_tagpack_tags',
 								$where,
 								$relations );
-						};
-					}
+						} else {
+							// in any other case we simply have to update all related tags with the valuleArray we have built before
+							$where = 'uid_local='.$valueArray['uid_local'].' AND uid_foreign='.$valueArray['uid_foreign'].' AND tablenames=\''.$valueArray['tablenames'].'\'';
+							$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+							    'tx_tagpack_tags_relations_mm',
+							    $where,
+							    $current_MM_Rows[$key] );
 					 
-					// in any other case we simply have to update all related tags with the valuleArray we have built before
-					$where = 'uid_local='.$valueArray['uid_local'].' AND uid_foreign='.$valueArray['uid_foreign'].' AND tablenames=\''.$valueArray['tablenames'].'\'';
-					$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-					'tx_tagpack_tags_relations_mm',
-						$where,
-						$current_MM_Rows[$key] );
+						}
+					}
 					 
 					// if the uid is in the array of selected tags we have to remove it now
 					// to make sure, that it won't be inserted as a knew relation in the next step

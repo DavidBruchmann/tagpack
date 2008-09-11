@@ -64,8 +64,8 @@
 		function makeTagCloud($content, $conf) {
 			$record = t3lib_div::trimExplode(':', $this->cObj->currentRecord);
 			if ($conf['singleItemCloud']) {
-				$table = 'tablenames=\''.$record[0].'\' AND ';
-				$uid = 'mm.uid_foreign IN('.$record[1].') AND ';
+				$table = 'tablenames=\''.$conf['tableName'].'\' AND ';
+				$uid = 'mm.uid_foreign IN('.$this->cObj->data['uid'].') AND ';
 			}
 			if (count($conf)) {
 				if ($this->piVars['filtermode'] === 'on' && !$conf['singleItemCloud'] && $this->piVars['uid']) {
@@ -185,7 +185,7 @@
 				'';
 				 
 				if ($conf['modeSwitch'] && !$conf['singleItemCloud']) {
-					$content = $this->makeModeSwitch($conf).$content;
+					$content = $content.$this->makeModeSwitch($conf);
 				}
 				 
 				if ($conf['searchBox'] && !$conf['singleItemCloud']) {
@@ -252,7 +252,7 @@
 				'additionalParams' => '&tx_tagpack_pi1[searchWord]=',
 				'returnLast' => 'url' );
 			$typolink = $this->cObj->typolink('', $typolinkConf);
-			$searchBox = '<form action="'.$typolink.'" class="tagpack-searchform" method="GET">
+			$searchBox = '<form action="'.$typolink.'" class="tagpack-searchform" method="GET" target="_top">
 				';
 			foreach($this->piVars as $key => $value) {
 				if ($key != 'searchWord') {
@@ -290,7 +290,7 @@
 					'returnLast' => 'url',
 					);
 				$typolink = $this->cObj->typolink('', $typolinkConf);
-				$calendar = '<form action="'.$typolink.'" class="tagpack-calendarform" method="GET">
+				$calendar = '<form action="'.$typolink.'" class="tagpack-calendarform" method="GET" target="_top">
 					';
 				foreach($this->piVars as $key => $value) {
 					if ($key != 'from' && $key != 'to') {

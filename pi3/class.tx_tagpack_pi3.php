@@ -89,6 +89,8 @@
 		*/
 		function makeElementList($table, $conf, $tags, $tagUid) {
 			 
+			$sortingTime = $conf['taggedElements.']['timeFields.'][$table] ? $conf['taggedElements.']['timeFields.'][$table] : 'tstamp';
+						
 			if ($tagUid) {
 				$tagsSelected = ' AND mm.uid_local IN('.$tagUid.')';
 			}
@@ -114,16 +116,6 @@
 			}
 			 
 			if ($tagUid) {
-				/*   echo $GLOBALS['TYPO3_DB']->SELECTquery(
-				$table.'.*,COUNT(mm.uid_local) AS counter',
-				'tx_tagpack_tags_relations_mm AS mm,'.$table.' '.$additionalFilters,
-				'mm.uid_foreign='.$table.'.uid
-				AND mm.tablenames=\''.$table.'\'
-				'.$this->cObj->enableFields($table).'
-				'.$calendarSettings.$searchSettings.$tagsSelected.$additionalFilterWhere,
-				$table.'.uid',
-				$table.'.tstamp DESC',
-				$conf['taggedElements.']['maxItems'] );*/
 				$taggedElements = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				$table.'.*,COUNT(mm.uid_local) AS counter',
 					'tx_tagpack_tags_relations_mm AS mm JOIN '.$table,
@@ -133,7 +125,7 @@
 					'.$this->cObj->enableFields($table).'
 					'.$calendarSettings.$searchSettings.$tagsSelected,
 					$table.'.uid',
-					$table.'.tstamp DESC',
+					$table.'.'.$sortingTime.' DESC',
 					$conf['taggedElements.']['maxItems'] );
 			} else {
 				if (count($this->pi1Vars)) {
