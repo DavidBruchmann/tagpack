@@ -184,7 +184,7 @@
 			$selectedUids = t3lib_div::trimexplode(',', $caller->datamap[$table][key($caller->datamap[$table])]['tx_tagpack_tags']);
 			
 			// if there are any we can create an array and hand it over to the function which is responsible for the DB actions
-			if (intval(trim($selectedUids[0]))) {
+			if (count($selectedUids)>1) {
 				foreach($selectedUids as $selectedUid) {
 					// if there are any prefixes, we must strip them first
 					$selectedUid = str_replace('tx_tagpack_tags_', '', $selectedUid);
@@ -199,9 +199,8 @@
 						$selectedTagUids[$selectedUid] = 1;
 					}
 				}
-				 
 				// now lets call the DB action
-				$this->delete_update_insert_relations($selectedTagUids, $table, $id, $pid, $command, $caller);
+				$this->delete_update_insert_relations($selectedTagUids, $table, $id, $pid, $command, $caller);				 
 			}
 		}
 		 
