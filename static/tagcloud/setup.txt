@@ -12,7 +12,7 @@ plugin {
     		10 = USER
     		10 {
             	    userFunc = tx_tagpack_pi1->makeTagCloud
-            	    startingpoint = {$tx_tagpack_pi1.startingpoint}
+		    tagPidList = {$tx_tagpack_pi1.tagPidList}
             	    targetPid = {$tx_tagpack_pi1.targetPid}
             	    minFontSize = {$tx_tagpack_pi1.minFontSize}
             	    maxFontSize = {$tx_tagpack_pi1.maxFontSize}
