@@ -154,7 +154,7 @@
 					'' );
 				$max = intval($tagRelations[0]['relations']);
 				$min = intval($tagRelations[($conf['maxNumberOfSizes']-1)]['relations']);
-				$typolink['parameter'] = $conf['targetPid'];
+				$typolink['parameter'] = $conf['targetPid'] ? $conf['targetPid'] : $GLOBALS['TSFE']->id;
 				$typolink['useCacheHash'] = 1;
 				if (count($tagArray)) {
 					foreach($tagArray as $tagValues) {
