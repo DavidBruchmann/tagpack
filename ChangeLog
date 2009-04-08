@@ -1,3 +1,7 @@
+0.6.1	09-04-08 JoH asenau  <jh@eqony.com>
+	
+	Fixed a small bug (ext_tables.php including wrong typoscript statics)
+
 0.6.0	09-04-08 JoH asenau  <jh@eqony.com>
 	
 	The new tag manager module is close to completion now - "Examine" and "Edit" are already available, "Merge" will be finished soon, "Translate" is planned for this summer
