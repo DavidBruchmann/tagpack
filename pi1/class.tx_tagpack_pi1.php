@@ -23,6 +23,8 @@
 	***************************************************************/
 
 	require_once(PATH_tslib.'class.tslib_pibase.php');
+	
+	include_once(t3lib_extMgm::extPath('tagpack').'lib/class.txt_tagpack_api.php');
 
 	/**
 	 * Plugin 'Tag Cloud' for the 'tagpack' extension.
@@ -75,7 +77,8 @@
 			$conf['fontColor'] = $conf['fontColor'] ? $conf['fontColor'] : '#000000';
 			$record = t3lib_div::trimExplode(':', $this->cObj->currentRecord);
 			$getTagsFromPidList = $conf['tagPidList'] ? $conf['tagPidList'] : 0;
-			$pid = 'tt.pid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($getTagsFromPidList).') AND ';
+			$getTagsFromPidList = implode(',',t3lib_div::trimExplode(',',$getTagsFromPidList));
+			$pid = 'tt.pid IN ('.$getTagsFromPidList.') AND ';
 			if ($conf['singleItemCloud']) {
 				$table = 'tablenames=\''.$conf['tableName'].'\' AND ';
 				$uid = 'mm.uid_foreign IN('.$this->cObj->data['uid'].') AND ';
@@ -154,7 +157,7 @@
 					'' );
 				$max = intval($tagRelations[0]['relations']);
 				$min = intval($tagRelations[($conf['maxNumberOfSizes']-1)]['relations']);
-				$typolink['parameter'] = $conf['targetPid'] ? $conf['targetPid'] : $GLOBALS['TSFE']->id;
+				$typolink['parameter'] = $conf['targetPid'];
 				$typolink['useCacheHash'] = 1;
 				if (count($tagArray)) {
 					foreach($tagArray as $tagValues) {
