@@ -42,7 +42,6 @@ function tpmIframeHide() {
 }
 
 function checkDate(triggerItem) {
-    alert(toLocaleString(triggerItem.value));        
 }
 
 function mergeForm(triggerItem) {

@@ -1,3 +1,7 @@
+0.6.2	09-04-08 JoH asenau  <jh@eqony.com>
+	
+	Fixed a small bug (removed JS debug alert from date fields)
+
 0.6.1	09-04-08 JoH asenau  <jh@eqony.com>
 	
 	Fixed a small bug (ext_tables.php including wrong typoscript statics)
