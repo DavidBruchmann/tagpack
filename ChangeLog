@@ -1,6 +1,8 @@
-0.6.2	09-04-08 JoH asenau  <jh@eqony.com>
+0.7.0	09-04-09 JoH asenau  <jh@eqony.com>
 	
-	Fixed a small bug (removed JS debug alert from date fields)
+	Tag manager module is close to stable now.
+	Merging of tags is now possible while assigning their relations to the replacement tag.
+	"Translate" will be a feature for the 1.x branch though.
 
 0.6.1	09-04-08 JoH asenau  <jh@eqony.com>
 	

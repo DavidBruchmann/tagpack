@@ -56,7 +56,6 @@ if (TYPO3_MODE == 'BE')	{
     t3lib_extMgm::addModule('user','txtagpackM1','',t3lib_extMgm::extPath($_EXTKEY).'mod1/');
 }
 
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/tagcloud/', 'tagcloud');
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/tagnominations/', 'tagnominations');
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/taggeditems/', 'taggeditems');
+t3lib_extMgm::addStaticFile($_EXTKEY,'pi1/static/', 'TagControls');
+t3lib_extMgm::addStaticFile($_EXTKEY,'pi3/static/', 'TagItemsOutput');
 ?>
