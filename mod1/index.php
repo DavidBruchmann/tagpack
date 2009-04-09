@@ -383,7 +383,7 @@
 			}
 			if($newId) {
 			    foreach($tagsToMerge as $tagToMergeId => $tagToMergeName) {
-				if(tx_tagpack_api::tagExists($tagToMergeId)) {
+				if(tx_tagpack_api::tagExists($tagToMergeId) && $tagToMergeId != $newId) {
 				    tx_tagpack_api::removeTag($tagToMergeId,FALSE,$newId);
 				}
 			    }			    
