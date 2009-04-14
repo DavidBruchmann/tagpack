@@ -1,3 +1,8 @@
+0.8.0	09-04-14 JoH asenau  <jh@eqony.com>
+	Fixed ext_tables.php to match the current versions of plugins and content elements again
+	Downgraded the plugins to the current working versions (sorry for the inconvenience caused by mixed up files)
+	Added the missing static folder again
+	
 0.7.1	09-04-09 JoH asenau  <jh@eqony.com>
 	
 	Tag manager module is close to stable now.
