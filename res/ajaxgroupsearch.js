@@ -86,7 +86,7 @@ function tx_tagpack_ajaxsearch_observer(el,creator,params) {
 			this.resultsListener = null;
 		}
 		// this timeout is super important, else the result browser will disappear before the clicks will be triggered
-		window.setTimeout((function () {this.results.hide();this.results.innerHTML = '';}).bind(this),500);
+		window.setTimeout((function () {this.results.hide();this.results.innerHTML = '';}).bind(this),1000);
 	}
 
 	/**
