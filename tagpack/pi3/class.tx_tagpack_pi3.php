@@ -120,25 +120,7 @@
 				 '';
 			}
 
-			if ($conf['taggedElements.']['additionalFilters.'][$table.'.']) {
-				$filters = $conf['taggedElements.']['additionalFilters.'][$table.'.'];
-				foreach($filters as $fieldName => $filterSettings) {
-					$getVar = t3lib_div::_GET($filterSettings['GETvar']);
-					if (is_array($getVar) && !$getVar[$filterSettings['GETvar.']['key']]) {
-						$getVar = false;
-					}
-					else if($getVar[$filterSettings['GETvar.']['key']]) {
-						$getVars[] = $getVar[$filterSettings['GETvar.']['key']];
-					}
-				}
-			}
-			
 			if ($tagUid) {
-				if ($conf['taggedElements.']['additionalFilters.'][$table.'.'] && count($getVars)) {
-					$limit = '';
-				} else {
-					$limit = $conf['taggedElements.']['maxItems'];
-				}
 				$taggedElements = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				$table.'.*,COUNT(mm.uid_foreign) AS counter',
 					$table.' JOIN tx_tagpack_tags_relations_mm AS mm',
@@ -149,14 +131,26 @@
 					'.$calendarSettings.$searchSettings.$tagsSelected,
 					'mm.uid_foreign',
 					'counter DESC,'.$table.'.uid,'.$table.'.'.$sortingTime.' DESC',
-					$limit );
+					$conf['taggedElements.']['maxItems'] );
 			} else {
 				if (count($this->pi1Vars)) {
 					foreach($this->pi1Vars as $value) {
 						if ($value) $enableResultList = true;
 					}
 				}
-				if ($enableResultList || count($getVars)) {
+				if ($conf['taggedElements.']['additionalFilters.'][$table.'.']) {
+					$filters = $conf['taggedElements.']['additionalFilters.'][$table.'.'];
+					foreach($filters as $fieldName => $filterSettings) {
+						$getVar = t3lib_div::_GET($filterSettings['GETvar']);
+						if (is_array($getVar) && !$getVar[$filterSettings['GETvar.']['key']]) {
+							$getVar = false;
+						}
+						else if($getVar[$filterSettings['GETvar.']['key']]) {
+							$getVar = $getVar[$filterSettings['GETvar.']['key']];
+						}
+					}
+				}
+				if ($enableResultList || $getVar) {
 					$taggedElements = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
 						$table,
@@ -179,7 +173,7 @@
 								$getVar = $getVar[$filterSettings['GETvar.']['key']];
 							}
 							$fieldName = str_replace('.', '', $fieldName);
-							if ((!$taggedElement[$fieldName] && $getVar) || ($taggedElement[$fieldName]!= $getVar) && $getVar) {
+							if (!$taggedElement[$fieldName] && $getVar) {
 								unset($taggedElements[$key]);
 							}
 							else if($getVar && $filterSettings['foreign_table'] && !$filterSettings['mm_table'] && !t3lib_div::inList($taggedElement[$fieldName], $getVar)) {
