@@ -1,3 +1,6 @@
+0.10.3 09-11-09 JoH asenau  <info@cybercraft.de>
+	Removed non existing email address
+
 0.10.2 09-11-09 JoH asenau  <info@cybercraft.de>
 	Renamed the variable allowedPages to allowedTables - spaces in the CSV list are removed now
 
