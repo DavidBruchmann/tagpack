@@ -1,3 +1,16 @@
+0.10.4 09-11-09 JoH asenau  <info@cybercraft.de>
+	Define position and appearance of the form element in forms
+	Additional TSconfig syntax
+	tx_tagpack_tags.table.[tablename] {
+		specificTypesList = [typelist]
+		position = [after:field|before:field] //<=default
+		position.[type] = [after:field|before:field] //<= config for a specific type
+		noTab = 1
+	}
+	
+	Fixed a bug that prevented the above feature from working
+
+
 0.10.3 09-11-09 JoH asenau  <info@cybercraft.de>
 	Removed non existing email address
 
