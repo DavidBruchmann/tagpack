@@ -1,3 +1,6 @@
+0.12.2 10-10-19 JoH asenau <info@cybercraft.de>
+	Fixed a bug caused by a missing space before an ANDed part of the WHERE clause.
+
 0.12.1 10-01-08 JoH asenau <info@cybercraft.de>
 	Fixed a bug caused by a missing closing bracket that caused result lists to disappear when there where jno additionalFilters set.
 

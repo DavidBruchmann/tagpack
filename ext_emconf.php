@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "tagpack".
 #
-# Auto generated 13-08-2015 13:23
+# Auto generated 09-08-2015 14:50
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'All purpose tagging suite. Use tags for almost any allowed table without having to create new DB fields for each of them. Create multifunctional tag clouds using surf or filter mode together with time based settings, a tag breadcrumb menu and a searchbox with autocompletion.',
 	'category' => 'Semantic Web',
 	'shy' => 0,
-	'version' => '0.12.1',
+	'version' => '0.12.2',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',

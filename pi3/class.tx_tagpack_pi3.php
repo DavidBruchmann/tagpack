@@ -110,7 +110,7 @@
 			$sortingTime = $conf['taggedElements.']['timeFields.'][$table] ? $conf['taggedElements.']['timeFields.'][$table] : 'tstamp';
 
 			if ($tagUid) {
-				$tagsSelected = 'AND tx_tagpack_tags_relations_mm.uid_local IN('.$tagUid.')';
+				$tagsSelected = ' AND tx_tagpack_tags_relations_mm.uid_local IN('.$tagUid.')';
 			}
 
 			if ($this->pi1Vars['from'] && $conf['taggedElements.']['timeFields.'][$table]) {
